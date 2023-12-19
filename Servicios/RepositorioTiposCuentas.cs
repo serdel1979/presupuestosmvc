@@ -10,6 +10,10 @@ namespace WebApplication1.Servicios
         Task Crear(TipoCuenta tipoCuenta);
         Task<bool> Existe(string nombre, int usuarioId);
         Task<IEnumerable<TipoCuenta>> Listar(int usuarioId);
+
+        Task<TipoCuenta> ObtenerPorId(int id, int usuarioId);
+        Task Actualizar(TipoCuenta tipoCuenta);
+
     }
 
     public class RepositorioTiposCuentas: IRepositorioTiposCuentas
@@ -25,12 +29,14 @@ namespace WebApplication1.Servicios
         {
             using var connection = new SqlConnection(connectString);
 
-            var id = await connection.QuerySingleAsync<int>(@"INSERT INTO TiposCuentas (Nombre, UsuarioId, Orden) VALUES (@Nombre,@tipoCuenta.UsuarioId, 0);
-                SELECT SCOPE_IDENTITY();", tipoCuenta);
+            var id = await connection.QuerySingleAsync<int>(@"
+                        INSERT INTO TiposCuentas (Nombre, UsuarioId, Orden) 
+                        VALUES (@Nombre, @UsuarioId, 0);
+                        SELECT SCOPE_IDENTITY();", tipoCuenta);
 
             tipoCuenta.Id = id;
-
         }
+
 
         public async Task<bool> Existe(string nombre, int idUsuario)
         {
@@ -51,6 +57,29 @@ namespace WebApplication1.Servicios
 
         }
 
+        public async Task Actualizar(TipoCuenta tipoCuenta)
+        {
+            using var connection = new SqlConnection(connectString);
+
+            var query = @"
+                    UPDATE TiposCuentas
+                    SET Nombre = @Nombre
+                    WHERE Id = @Id;
+    ";
+
+            await connection.ExecuteAsync(query,tipoCuenta);
+        }
+
+        public async Task<TipoCuenta> ObtenerPorId(int id, int usuarioId)
+        {
+            using var connection = new SqlConnection(connectString);
+
+            return await connection.QueryFirstOrDefaultAsync<TipoCuenta>(@"SELECT Id, Nombre, Orden FROM TiposCuentas WHERE Id = @Id and UsuarioId = @UsuarioId",
+                new { id, usuarioId});
+
+
+
+        }
 
     }
 }

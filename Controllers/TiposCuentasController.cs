@@ -66,6 +66,38 @@ namespace WebApplication1.Controllers
             return Json(true);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> Editar(int id)
+        {
+            var usuarioId = servicioUsuarios.GetUsuarioId();
+            var tipoCuenta = await repositorioTipoCuentas.ObtenerPorId(id,usuarioId);
+
+            if(tipoCuenta is null)
+            {
+                return RedirectToAction("No encontrado","Home");
+            }
+
+            return View(tipoCuenta);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Editar(TipoCuenta tipoCuenta)
+        {
+            var usuarioId = servicioUsuarios.GetUsuarioId();
+            var tipoExiste = await repositorioTipoCuentas.Existe(tipoCuenta.Nombre, usuarioId);   
+            
+            if (tipoExiste)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+
+            await repositorioTipoCuentas.Actualizar(tipoCuenta);
+
+            return RedirectToAction("Index");
+        }
+
+
 
     }
 }
