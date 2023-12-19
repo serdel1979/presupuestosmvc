@@ -74,7 +74,7 @@ namespace WebApplication1.Controllers
 
             if(tipoCuenta is null)
             {
-                return RedirectToAction("No encontrado","Home");
+                return RedirectToAction("NoEncontrado", "Home");
             }
 
             return View(tipoCuenta);
