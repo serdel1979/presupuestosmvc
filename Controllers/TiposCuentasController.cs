@@ -98,6 +98,37 @@ namespace WebApplication1.Controllers
         }
 
 
+        public async Task<IActionResult> Eliminar(int Id)
+        {
+            var usuarioId = servicioUsuarios.GetUsuarioId();
+
+            var tipoCuenta = await repositorioTipoCuentas.ObtenerPorId(Id, usuarioId);
+
+            if (tipoCuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+
+            return View(tipoCuenta);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarTipoCuenta(int Id)
+        {
+            var usuarioId = servicioUsuarios.GetUsuarioId();
+
+            var tipoCuenta = await repositorioTipoCuentas.ObtenerPorId(Id, usuarioId);
+
+            if (tipoCuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+
+            await repositorioTipoCuentas.Eliminar(Id);
+
+            return RedirectToAction("Index");
+        }
+
 
     }
 }

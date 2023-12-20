@@ -13,7 +13,7 @@ namespace WebApplication1.Servicios
 
         Task<TipoCuenta> ObtenerPorId(int id, int usuarioId);
         Task Actualizar(TipoCuenta tipoCuenta);
-
+        Task Eliminar(int id);
     }
 
     public class RepositorioTiposCuentas: IRepositorioTiposCuentas
@@ -77,7 +77,15 @@ namespace WebApplication1.Servicios
             return await connection.QueryFirstOrDefaultAsync<TipoCuenta>(@"SELECT Id, Nombre, Orden FROM TiposCuentas WHERE Id = @Id and UsuarioId = @UsuarioId",
                 new { id, usuarioId});
 
+        }
 
+
+        public async Task Eliminar(int id)
+        {
+            using var connection = new SqlConnection(connectString);
+
+            await connection.ExecuteAsync(@"DELETE TiposCuentas WHERE Id = @Id",
+                new { id });
 
         }
 
