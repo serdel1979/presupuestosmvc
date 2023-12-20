@@ -33,6 +33,7 @@
                     <tr>
                         <td>@tipoCuenta.Nombre</td>
                         <td>
+                            <input type="hidden" value="@tipoCuenta.Id" class="ids" />
                             <a asp-action="Editar" asp-route-id="@tipoCuenta.Id" class="btn btn-warning">Editar</a>
                             <a asp-action="Eliminar" asp-route-id="@tipoCuenta.Id" class="btn btn-danger">Borrar</a>
                         </td>
@@ -47,8 +48,40 @@
 
                 @section scripts{
                     <script>
+
+                        const urlOrdenar = '@Url.Action("ordenar")';
+
                         $(function(){
-                            $("#reordenable").sortable();
+                            $("#reordenable").sortable({
+                                stop: async function(e,ui){
+                                    await actualizarOrdenes();
+                                }
+                            });
+
+                            async function actualizarOrdenes(){
+                                const ids = obtenerIdsEelementos();
+                                await sendToBack(ids);
+                            }
+
+                            function obtenerIdsEelementos(){
+                                const ids = $(".ids").map(function(){
+                                    $(this).val();
+                                }).get();
+                                return ids;
+                            }
+
+                            async function sendToBack(ids){
+                                var data = JSON.stringify(ids);
+
+                                await fetch(urlOrdenar,{
+                                    method:'POST',
+                                    body: data,
+                                    headers: {
+                                        'Content-Type':'application/json'
+                                    }
+                                });
+                            }
+                            
                         })
                     </script>
                 }

@@ -129,6 +129,12 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Ordenar([FromBody] int[] ids)
+        {
 
+
+            return Ok();
+        }
     }
 }
