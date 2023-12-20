@@ -4,9 +4,17 @@
     ViewData["Title"] = "Borrado Tipo de cuenta";
 }
 
-<h3 class="mb-3">¿Está seguro de eliminar a @Model.Nombre?</h3>
-<form asp-action="EliminarTipoCuenta">
-    <input type="hidden" asp-for="Id"/>
-    <button class="btn btn-danger">Borrar</button>
-    <a class="btn btn-secundary" asp-action="Index">Cancelar</a>
-</form>
+<div class="card">
+
+    <div class="card-body">
+
+        <h3 class="mb-3">¿Está seguro de eliminar a @Model.Nombre?</h3>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <form asp-action="EliminarTipoCuenta">
+            <input type="hidden" asp-for="Id" />
+            <button class="btn btn-danger">Borrar</button>
+            <a class="btn btn-secundary" asp-action="Index">Cancelar</a>
+        </form>
+    </div>
+</div>
