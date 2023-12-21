@@ -59,20 +59,19 @@
                             });
 
                             async function actualizarOrdenes(){
-                                const ids = obtenerIdsEelementos();
+                                const ids = await obtenerIdsEelementos();
                                 await sendToBack(ids);
                             }
 
                             function obtenerIdsEelementos(){
                                 const ids = $(".ids").map(function(){
-                                    $(this).val();
+                                   return $(this).val();
                                 }).get();
                                 return ids;
                             }
 
                             async function sendToBack(ids){
                                 var data = JSON.stringify(ids);
-
                                 await fetch(urlOrdenar,{
                                     method:'POST',
                                     body: data,
