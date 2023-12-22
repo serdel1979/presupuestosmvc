@@ -19,6 +19,31 @@ namespace WebApplication1.Controllers
             this.repositorioCuentas = repositorioCuentas;
         }
 
+
+        public async Task<IActionResult> Index()
+        {
+            var usuarioId = servicioUsuarios.GetUsuarioId();
+            var cuentasConTipo = await repositorioCuentas.Listar(usuarioId);
+
+            var modelo = cuentasConTipo
+                .GroupBy(x => x.TipoCuenta)
+                .Select(grupo=> new IndiceCuentasViewModel
+                {
+                    TipoCuenta = grupo.Key,
+                    Cuentas = grupo.AsEnumerable()
+                }).ToList();
+            return View(modelo);
+        }
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    var usuarioId = servicioUsuarios.GetUsuarioId();
+        //    var cuentas = await repositorioCuentas.Listar(usuarioId);
+        //    return View(cuentas);
+        //}
+
+
+
         [HttpGet]
         public async Task<IActionResult> Crear()
         {

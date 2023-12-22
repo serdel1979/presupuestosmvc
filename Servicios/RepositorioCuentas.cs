@@ -9,6 +9,8 @@ namespace WebApplication1.Servicios
     public interface IRepositorioCuentas
     {
         Task Crear(Cuenta cuenta);
+
+        Task<IEnumerable<Cuenta>> Listar(int usuarioId);
     }
 
     public class RepositorioCuentas : IRepositorioCuentas
@@ -34,6 +36,18 @@ namespace WebApplication1.Servicios
             cuenta.Id = id;
         }
 
+
+        public async Task<IEnumerable<Cuenta>> Listar(int usuarioId)
+        {
+            using var connection = new SqlConnection(connectString);
+            return await connection.QueryAsync<Cuenta>(@"select Cuentas.Id, Cuentas.Nombre, Balance, tc.Nombre as TipoCuenta, Cuentas.Descripcion
+                                                            from Cuentas
+                                                            inner join TiposCuentas as tc
+                                                            on tc.Id = Cuentas.TipoCuentaId
+                                                            WHERE tc.UsuarioId = @usuarioId
+                                                            order by tc.Orden;", new { usuarioId });
+
+        }
 
 
     }
